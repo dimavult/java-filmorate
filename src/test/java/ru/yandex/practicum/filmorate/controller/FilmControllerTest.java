@@ -18,22 +18,22 @@ class FilmControllerTest {
             "film",
             "desc",
             LocalDate.of(1956, 4, 1),
-            Duration.ofMinutes(95));
+            95);
     public final Film filmWithoutName = new Film(2,
             null,
             "desc1",
             LocalDate.of(1956, 4, 1),
-            Duration.ofMinutes(95));
+            95);
     public final Film filmWithEmptyName = new Film(3,
             "",
             "desc2",
             LocalDate.of(1956, 4, 1),
-            Duration.ofMinutes(95));
+            95);
     public final Film filmWithIncorrectReleaseDate = new Film(4,
             "film3",
             "desc1",
             LocalDate.of(1356, 4, 1),
-            Duration.ofMinutes(95));
+            95);
     public final Film filmWIthTooLongDesc = new Film(4,
             "film4",
             "Мой дом везде, где есть небесный свод,\n" +
@@ -50,38 +50,38 @@ class FilmControllerTest {
                     "И осужден страдать я долго в нём\n" +
                     "И в нём лишь буду я спокоен.",
             LocalDate.of(1956, 4, 1),
-            Duration.ofMinutes(95));
+            95);
     public final Film filmWIth199SymbolsDesc = new Film(5,
             "film5",
             "тексттексттексттексттексттексттексттексттексттексттексттексттексттексттексттексттексттекстт" +
                     "ексттексттексттексттексттексттексттексттексттексттексттексттекстт" +
                     "ексттексттексттексттексттексттексттексттекс",
             LocalDate.of(1956, 4, 1),
-            Duration.ofMinutes(95));
+            95);
     public final Film filmWIth200SymbolsDesc = new Film(6,
             "film6",
             "тексттексттексттексттексттексттексттексттексттексттексттексттексттексттексттексттексттекстт" +
                     "ексттексттексттексттексттексттексттексттексттексттексттексттекстт" +
                     "ексттексттексттексттексттексттексттексттексt",
             LocalDate.of(1956, 4, 1),
-            Duration.ofMinutes(95));
+            95);
     public final Film filmWIth201SymbolsDesc = new Film(7,
             "film7",
             "тексттексттексттексттексттексттексттексттексттексттексттексттексттексттексттексттексттекстт" +
                     "ексттексттексттексттексттексттексттексттексттексттексттексттекстт" +
                     "ексттексттексттексттексттексттексттексттексtt",
             LocalDate.of(1956, 4, 1),
-            Duration.ofMinutes(95));
+            95);
     public final Film filmWithReleaseDateEqualsEarliest = new Film(8,
             "film8",
             "desc1",
             LocalDate.of(1895, 12, 28),
-            Duration.ofMinutes(95));
+            95);
     public final Film notAddedFilm = new Film(123123123,
             "film",
             "desc",
             LocalDate.of(1956, 4, 1),
-            Duration.ofMinutes(95));
+            95);
 
     @BeforeEach
     public void setup() {
@@ -141,7 +141,7 @@ class FilmControllerTest {
         final String anotherName = "another name";
         final String anotherDescription = "another description";
         final LocalDate anotherLocalDate = LocalDate.of(2000, 2,2);
-        final Duration anotherDuration = Duration.ofMinutes(110);
+        final long anotherDuration = 110;
         correctFilm.setName(anotherName);
         correctFilm.setDescription(anotherDescription);
         correctFilm.setReleaseDate(anotherLocalDate);
