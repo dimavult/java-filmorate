@@ -19,7 +19,7 @@ public class FilmValidator {
         } else if (film.getReleaseDate().isBefore(EARLIEST_RELEASE_DATE)) {
             log.debug("wrong release date");
             return false;
-        } else if (film.getDuration().isZero() || film.getDuration().isNegative()) {
+        } else if (film.getDuration() <= 0) {
             log.debug("wrong film duration");
             return false;
         } else if (film.getDescription().length() > 200) {
