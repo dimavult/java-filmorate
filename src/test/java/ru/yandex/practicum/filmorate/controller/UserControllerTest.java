@@ -5,6 +5,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.service.impl.UserServiceImpl;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.imp.InMemoryUserStorage;
+import utils.ValidatorTestUtils;
 
 import java.time.LocalDate;
 
@@ -13,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserControllerTest {
 
     public UserController userController;
+    public UserService userService;
     public User correctUser = new User("somemail@gmail.com",
             "login",
             "name",
@@ -55,46 +61,40 @@ class UserControllerTest {
 
     @BeforeEach
     public void setUp() {
-        userController = new UserController();
+        userController = new UserController(userService);
     }
 
     @Test
     @DisplayName("test GET /users")
     void getUsers() {
-        assertEquals(0, userController.getUsers().size(), "users list is not empty");
+        assertEquals(0, userController.getUsersList().size(), "users list is not empty");
 
         userController.saveUser(correctUser);
 
-        assertEquals(1, userController.getUsers().size(), "user wasn't added");
+        assertEquals(1, userController.getUsersList().size(), "user wasn't added");
     }
 
     @Test
     @DisplayName("test POST /users")
     void saveUser() {
         /*
-        test with correct user
-         */
-        userController.saveUser(correctUser);
-
-        assertEquals(1, userController.getUsers().size(), "user wasn't added");
-        /*
         tests with users with incorrect email
          */
-        assertThrows(ValidationException.class, () -> userController.saveUser(userWIthNullEmail),
-                "user with null email has been added");
-        assertThrows(ValidationException.class, () -> userController.saveUser(userWIthEmptyEmail),
-                "user with empty email has been added");
-        assertThrows(ValidationException.class, () -> userController.saveUser(userWIthEmailWithoutNeededSymbol),
-                "user without '@' symbol has been added");
+        assertTrue(ValidatorTestUtils.objHasErrorMessage(userWIthNullEmail,
+                "Email is mandatory"));
+        assertTrue(ValidatorTestUtils.objHasErrorMessage(userWIthEmptyEmail,
+                "Email is mandatory"));
+        assertTrue(ValidatorTestUtils.objHasErrorMessage(userWIthEmailWithoutNeededSymbol,
+                "Wrong email"));
         /*
         tests with users with incorrect login
          */
-        assertThrows(ValidationException.class, () -> userController.saveUser(userWithNullLogin),
-                "user with null login has been added");
-        assertThrows(ValidationException.class, () -> userController.saveUser(userWithEmptyLogin),
-                "user with empty login has been added");
-        assertThrows(ValidationException.class, () -> userController.saveUser(userWithLoginContainsSpaces),
-                "user with login containing spaces has been added");
+        assertTrue(ValidatorTestUtils.objHasErrorMessage(userWithNullLogin,
+                "Login is mandatory"));
+        assertTrue(ValidatorTestUtils.objHasErrorMessage(userWithEmptyLogin,
+                "Login is mandatory"));
+        assertTrue(ValidatorTestUtils.objHasErrorMessage(userWithLoginContainsSpaces,
+                "Login mustn't contain spaces"));
         /*
         test with nameless user
          */
@@ -105,8 +105,8 @@ class UserControllerTest {
         /*
         test with incorrect birthday
          */
-        assertThrows(ValidationException.class, () -> userController.saveUser(userWithBirthdayInFuture),
-                "birthday cannot be in the future");
+        assertTrue(ValidatorTestUtils.objHasErrorMessage(userWithBirthdayInFuture,
+                "Birthday must be in past"));
     }
 
     @Test
@@ -122,13 +122,13 @@ class UserControllerTest {
         correctUser.setEmail(anotherEmail);
         correctUser.setBirthday(anotherBirthday);
 
-        assertEquals(anotherName, userController.getUsers().get(0).getName(),
+        assertEquals(anotherName, userController.getUsersList().get(0).getName(),
                 "names are not the same");
-        assertEquals(anotherLogin, userController.getUsers().get(0).getLogin(),
+        assertEquals(anotherLogin, userController.getUsersList().get(0).getLogin(),
                 "logins are not the same");
-        assertEquals(anotherEmail, userController.getUsers().get(0).getEmail(),
+        assertEquals(anotherEmail, userController.getUsersList().get(0).getEmail(),
                 "emails are not the same");
-        assertEquals(anotherBirthday, userController.getUsers().get(0).getBirthday(),
+        assertEquals(anotherBirthday, userController.getUsersList().get(0).getBirthday(),
                 "dates are not the same");
 
         assertThrows(ValidationException.class, ()-> userController.updateUser(notAddedUser));

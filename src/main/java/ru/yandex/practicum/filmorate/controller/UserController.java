@@ -1,62 +1,64 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.validator.uservalidator.UserValidator;
+import ru.yandex.practicum.filmorate.service.UserService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
 @Slf4j
+@Validated
 public class UserController {
-    private final Map<Integer, User> users = new HashMap<>();
-    private final UserValidator validator = new UserValidator();
-    private int id = 1;
-    private int generateId() {
-        return id++;
+    private final UserService service;
+
+    @Autowired
+    public UserController(UserService storage) {
+        this.service = storage;
     }
 
     @GetMapping
-    public List<User> getUsers() {
-        return new ArrayList<>(users.values());
+    public List<User> getUsersList() {
+        return service.getUsers();
+    }
+
+    @GetMapping(value = "/{id}")
+    public User getUser(@PathVariable long id) {
+        return service.getUserById(id);
+    }
+
+    @GetMapping(value = "/{id}/friends")
+    public List<User> getUsersFriends(@PathVariable long id) {
+        return service.getUsersFriends(id);
+    }
+
+    @GetMapping(value = "/{id}/friends/common/{otherId}")
+    public List<User> getFriendsIntersection(@PathVariable long id, @PathVariable long otherId) {
+        return service.getMutualFriends(id, otherId);
     }
 
     @PostMapping
-    public User saveUser(@RequestBody User user) {
-        if (validator.validate(user)) {
-            addUser(user);
-            log.info("add user - " + user);
-        } else {
-            throw new ValidationException("A validation error occurred");
-        }
-        return user;
+    public User saveUser(@Valid @RequestBody User user) {
+        return service.addUser(user);
     }
 
     @PutMapping
-    public User updateUser(@RequestBody User user) {
-        if (validator.validate(user) && users.containsKey(user.getId())) {
-            int userId = user.getId();
-            users.put(userId, user);
-            log.info("update user - " + user);
-        } else {
-            throw new ValidationException("A validation error occurred");
-        }
-        return user;
+    public User updateUser(@Valid @RequestBody User user) {
+        return service.updateUser(user);
     }
 
-    private void addUser(User user) {
-        if (user.getName() == null || user.getName().isBlank()) {
-            String login = user.getLogin();
-            user.setName(login);
-        }
+    @PutMapping(value = "/{id}/friends/{friendId}")
+    public User addFriend(@PathVariable long id, @PathVariable long friendId) {
+        return service.addFriend(id, friendId);
+    }
 
-        user.setId(generateId());
-        users.put(user.getId(), user);
+    @DeleteMapping(value = "/{id}/friends/{friendId}")
+    public User removeFriend(@PathVariable long id, @PathVariable long friendId) {
+        return service.deleteFriend(id, friendId);
     }
 }
