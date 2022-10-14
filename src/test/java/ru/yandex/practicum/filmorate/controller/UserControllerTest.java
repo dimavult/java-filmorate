@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
@@ -61,6 +62,7 @@ class UserControllerTest {
 
     @BeforeEach
     public void setUp() {
+        userService = new UserServiceImpl(new InMemoryUserStorage());
         userController = new UserController(userService);
     }
 
@@ -131,6 +133,6 @@ class UserControllerTest {
         assertEquals(anotherBirthday, userController.getUsersList().get(0).getBirthday(),
                 "dates are not the same");
 
-        assertThrows(ValidationException.class, ()-> userController.updateUser(notAddedUser));
+        assertThrows(UserNotFoundException.class, ()-> userController.updateUser(notAddedUser));
     }
 }

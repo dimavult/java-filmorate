@@ -3,19 +3,25 @@ package ru.yandex.practicum.filmorate.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
+import ru.yandex.practicum.filmorate.service.impl.FilmServiceImpl;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.imp.InMemoryFilmStorage;
 import utils.ValidatorTestUtils;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class FilmControllerTest {
     public FilmController filmController;
     public FilmService filmService;
+    public FilmStorage storage;
     public final Film correctFilm = new Film("film",
             "desc",
             LocalDate.of(1956, 4, 1),
@@ -78,6 +84,8 @@ class FilmControllerTest {
 
     @BeforeEach
     public void setup() {
+        storage = new InMemoryFilmStorage();
+        filmService = new FilmServiceImpl(storage);
         filmController = new FilmController(filmService);
     }
 
@@ -148,6 +156,6 @@ class FilmControllerTest {
         assertEquals(anotherDuration, filmController.getFilms().get(0).getDuration(),
                 "films duration are not the same");
 
-        assertThrows(ValidationException.class, () -> filmController.updateFilm(notAddedFilm));
+        assertThrows(FilmNotFoundException.class, () -> filmController.updateFilm(notAddedFilm));
     }
 }
