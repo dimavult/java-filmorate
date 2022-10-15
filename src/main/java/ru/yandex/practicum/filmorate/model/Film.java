@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,10 +14,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-@AllArgsConstructor(access = AccessLevel.PUBLIC)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor
+@NoArgsConstructor
 public class Film {
-    private long id;
+    private Long id;
     private Set<Long> likes = new HashSet<>();
     @NotBlank(message = "Name is mandatory")
     private String name;

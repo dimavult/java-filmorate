@@ -1,19 +1,13 @@
 package ru.yandex.practicum.filmorate.exceptionhandler;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
+@AllArgsConstructor
 public class ErrorResponse {
     String error;
     String description;
-
-    public ErrorResponse(String error, String description) {
-        this.error = error;
-        this.description = description;
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public String getDescription() {
-        return description;
-    }
 }

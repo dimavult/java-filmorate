@@ -8,8 +8,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-@AllArgsConstructor(access = AccessLevel.PUBLIC)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
     private long id;
     private final Set<Long> friends = new HashSet<>();

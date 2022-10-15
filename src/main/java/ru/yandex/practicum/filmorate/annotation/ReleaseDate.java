@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = ReleaseDateImp.class)
-public @interface ReleaseDate { //добавил на будущее, когда сможешь нормально обработать валидацию(надеюсь)
+public @interface ReleaseDate {
     String message() default "Release date must be after 28.12.1895";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

@@ -3,8 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.EntityNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
@@ -14,7 +13,6 @@ import ru.yandex.practicum.filmorate.storage.imp.InMemoryFilmStorage;
 import utils.ValidatorTestUtils;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -156,6 +154,6 @@ class FilmControllerTest {
         assertEquals(anotherDuration, filmController.getFilms().get(0).getDuration(),
                 "films duration are not the same");
 
-        assertThrows(FilmNotFoundException.class, () -> filmController.updateFilm(notAddedFilm));
+        assertThrows(EntityNotFoundException.class, () -> filmController.updateFilm(notAddedFilm));
     }
 }

@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
@@ -14,7 +13,6 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@Component
 public class UserServiceImpl implements UserService {
     private final UserStorage storage;
 
@@ -27,7 +25,6 @@ public class UserServiceImpl implements UserService {
     public User addFriend(long yourId, long friendId) {
         storage.getUserById(friendId).addFriend(yourId);
         storage.getUserById(yourId).addFriend(friendId);
-        log.info("friend with ID" + friendId + " has been added");
         return storage.getUserById(friendId);
     }
 
@@ -35,7 +32,6 @@ public class UserServiceImpl implements UserService {
     public User deleteFriend(long yourId, long friendId) {
         storage.getUserById(friendId).deleteFriend(yourId);
         storage.getUserById(yourId).deleteFriend(friendId);
-        log.info("friend with ID" + friendId + " has been deleted");
         return storage.getUserById(friendId);
     }
 

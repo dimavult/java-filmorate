@@ -15,50 +15,50 @@ import java.util.List;
 @Slf4j
 @Validated
 public class UserController {
-    private final UserService service;
+    private final UserService userService;
 
     @Autowired
     public UserController(UserService storage) {
-        this.service = storage;
+        this.userService = storage;
     }
 
     @GetMapping
     public List<User> getUsersList() {
-        return service.getUsers();
+        return userService.getUsers();
     }
 
     @GetMapping(value = "/{id}")
     public User getUser(@PathVariable long id) {
-        return service.getUserById(id);
+        return userService.getUserById(id);
     }
 
     @GetMapping(value = "/{id}/friends")
     public List<User> getUsersFriends(@PathVariable long id) {
-        return service.getUsersFriends(id);
+        return userService.getUsersFriends(id);
     }
 
     @GetMapping(value = "/{id}/friends/common/{otherId}")
     public List<User> getFriendsIntersection(@PathVariable long id, @PathVariable long otherId) {
-        return service.getMutualFriends(id, otherId);
+        return userService.getMutualFriends(id, otherId);
     }
 
     @PostMapping
     public User saveUser(@Valid @RequestBody User user) {
-        return service.addUser(user);
+        return userService.addUser(user);
     }
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
-        return service.updateUser(user);
+        return userService.updateUser(user);
     }
 
     @PutMapping(value = "/{id}/friends/{friendId}")
     public User addFriend(@PathVariable long id, @PathVariable long friendId) {
-        return service.addFriend(id, friendId);
+        return userService.addFriend(id, friendId);
     }
 
     @DeleteMapping(value = "/{id}/friends/{friendId}")
     public User removeFriend(@PathVariable long id, @PathVariable long friendId) {
-        return service.deleteFriend(id, friendId);
+        return userService.deleteFriend(id, friendId);
     }
 }

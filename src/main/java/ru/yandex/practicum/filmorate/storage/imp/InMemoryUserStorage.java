@@ -2,13 +2,10 @@ package ru.yandex.practicum.filmorate.storage.imp;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.annotation.Validated;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.EntityNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,29 +28,29 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getUserById(long id) {
-        if (!users.containsKey(id)) throw new UserNotFoundException("User not found");
+        if (!users.containsKey(id)) throw new EntityNotFoundException("User not found");
         return users.get(id);
     }
 
     @Override
     public void deleteUser(long id) {
-        if (!users.containsKey(id)) throw new UserNotFoundException("User not found");
+        if (!users.containsKey(id)) throw new EntityNotFoundException("User not found");
         users.remove(id);
     }
 
     @Override
     public User addUser(User user) {
         addNonameUser(user);
-        log.info("add user - " + user);
+        log.info("Add user - " + user);
         return user;
     }
 
     @Override
     public User updateUser(User user) {
-        if (!users.containsKey(user.getId())) throw new UserNotFoundException("User doesn't exist");
+        if (!users.containsKey(user.getId())) throw new EntityNotFoundException("User doesn't exist");
         long userId = user.getId();
         users.put(userId, user);
-        log.info("update user - " + user);
+        log.info("Update user - " + user);
 
         return user;
     }

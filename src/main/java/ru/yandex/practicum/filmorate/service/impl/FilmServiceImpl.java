@@ -1,9 +1,9 @@
 package ru.yandex.practicum.filmorate.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.LikeNotFoundException;
+import ru.yandex.practicum.filmorate.exception.EntityNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -11,54 +11,56 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import java.util.List;
 
 @Service
-@Component
+@Slf4j
 public class FilmServiceImpl implements FilmService {
-    private final FilmStorage storage;
+    private final FilmStorage filmStorage;
 
     @Autowired
     public FilmServiceImpl(FilmStorage storage) {
-        this.storage = storage;
+        this.filmStorage = storage;
     }
 
     @Override
     public void likeFilm(long filmId, long userId) {
-        storage.getFilmById(filmId).addLike(userId);
+        log.info("User {} liked film {}", userId, filmId);
+        filmStorage.getFilmById(filmId).addLike(userId);
     }
 
     @Override
     public Film deleteLike(long filmId, long userId) {
-        if (!storage.getFilmById(filmId).getLikes().contains(userId)) throw new LikeNotFoundException("Like not found");
-        storage.getFilmById(filmId).removeLike(userId);
-        return storage.getFilmById(filmId);
+        if (!filmStorage.getFilmById(filmId).getLikes().contains(userId)) throw new EntityNotFoundException("Like not found");
+        log.info("User {} deleted like film {}", userId, filmId);
+        filmStorage.getFilmById(filmId).removeLike(userId);
+        return filmStorage.getFilmById(filmId);
     }
 
     @Override
     public List<Film> getTopFilms(int count) {
-        return storage.getTopFilms(count);
+        return filmStorage.getTopFilms(count);
     }
 
     @Override
     public List<Film> getFilms() {
-        return storage.getFilms();
+        return filmStorage.getFilms();
     }
 
     @Override
     public Film getFilmById(long id) {
-        return storage.getFilmById(id);
+        return filmStorage.getFilmById(id);
     }
 
     @Override
     public void deleteFilm(long id) {
-        storage.deleteFilm(id);
+        filmStorage.deleteFilm(id);
     }
 
     @Override
     public Film addFilm(Film film) {
-        return storage.addFilm(film);
+        return filmStorage.addFilm(film);
     }
 
     @Override
     public Film updateFilm(Film film) {
-        return storage.updateFilm(film);
+        return filmStorage.updateFilm(film);
     }
 }

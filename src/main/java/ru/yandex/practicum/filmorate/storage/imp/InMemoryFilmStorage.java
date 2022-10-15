@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.storage.imp;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exception.EntityNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
@@ -25,13 +25,14 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film getFilmById(long id) {
-        if (!films.containsKey(id)) throw new FilmNotFoundException("Film not found");
+        if (!films.containsKey(id)) throw new EntityNotFoundException("Film not found");
         return films.get(id);
     }
 
     @Override
     public void deleteFilm(long id) {
-        if (!films.containsKey(id)) throw new FilmNotFoundException("Film not found");
+        if (!films.containsKey(id)) throw new EntityNotFoundException("Film not found");
+        log.info("Delete film {}", films.get(id));
         films.remove(id);
     }
 
@@ -39,27 +40,22 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film addFilm(Film film) {
         film.setId(generateId());
         films.put(film.getId(), film);
-        log.info("add film - " + film);
+        log.info("Add film - " + film);
         return film;
     }
 
     @Override
     public Film updateFilm(Film film) {
-        if (!films.containsKey(film.getId())) throw new FilmNotFoundException("Film not found");
+        if (!films.containsKey(film.getId())) throw new EntityNotFoundException("Film not found");
         films.put(film.getId(), film);
-        log.info("add film - " + film);
+        log.info("Update film - " + film);
         return film;
     }
 
     @Override
     public List<Film> getTopFilms(int count) {
         return films.values().stream()
-                .sorted((f1, f2) -> {
-                    Integer f1size = f1.getLikes().size();
-                    Integer f2size = f2.getLikes().size();
-                    int comp = f1size.compareTo(f2size);
-                    return -1 * comp;
-                })
+                .sorted(Comparator.comparingInt(film -> -film.getLikes().size()))
                 .limit(count)
                 .collect(Collectors.toList());
     }
