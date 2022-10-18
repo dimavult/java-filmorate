@@ -2,18 +2,37 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.*;
 
+import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
-@Builder(toBuilder = true)
-@AllArgsConstructor(access = AccessLevel.PUBLIC)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
-    private int id;
+    private long id;
+    private final Set<Long> friends = new HashSet<>();
+    @NotBlank(message = "Email is mandatory")
+    @Email(message = "Wrong email")
     private String email;
+
+    @NotBlank(message = "Login is mandatory")
+    @Pattern(regexp = "\\S+", message = "Login mustn't contain spaces")
     private String login;
     private String name;
+
+    @NotNull(message = "Birthday is mandatory")
+    @Past(message = "Birthday must be in past")
     private LocalDate birthday;
+
+    public void addFriend(long id){
+        friends.add(id);
+    }
+
+    public void deleteFriend(long id) {
+        friends.remove(id);
+    }
 
     public User(String email, String login, String name, LocalDate birthday) {
         this.email = email;
@@ -22,17 +41,9 @@ public class User {
         this.birthday = birthday;
     }
 
-    public User(int id, String email, String login, LocalDate birthday) {
-        this.id = id;
-        this.email = email;
-        this.login = login;
-        this.birthday = birthday;
-    }
-
     public User(String email, String login, LocalDate birthday) {
         this.email = email;
         this.login = login;
         this.birthday = birthday;
     }
-
 }
